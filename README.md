@@ -1,7 +1,7 @@
 # Финальный проект 4 спринта автоматизации
 ## Юнит-тесты для приложения BooksCollector
 ### 1. Тесты метода add_new_book - добавление книги в словарь:
-##### test_add_new_book_add_book_name_less_40_true
+##### test_add_new_book_add_one_book
 ###### книга добавляеся при валидной длине названия
 ##### test_add_new_book_add_book_no_genre_true
 ###### у новой добавленной книги жанр не задан

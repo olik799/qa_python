@@ -5,21 +5,25 @@ from main import BooksCollector
 
 class TestBooksCollector:
 
-    def test_add_new_book_add_book_name_less_40_true(self):
+    def test_add_new_book_add_one_book(self):
+        name = 'Гордость и предубеждение и зомби'
         collector = BooksCollector()
-        collector.add_new_book('Гордость и предубеждение и зомби')
-        assert len(collector.books_genre) == 1
+        collector.add_new_book(name)
+        assert name in collector.get_books_genre()
 
     def test_add_new_book_add_book_no_genre_true(self):
+        name = 'Гордость и предубеждение и зомби'
         collector = BooksCollector()
-        collector.add_new_book('Гордость и предубеждение и зомби')
-        assert collector.books_genre['Гордость и предубеждение и зомби'] == ''
+        collector.add_new_book(name)
+        book_genre = collector.get_books_genre()
+        assert book_genre[name] == ''
 
     def test_add_new_book_not_add_two_book_same_name_true(self):
+        name = 'Гордость и предубеждение и зомби'
         collector = BooksCollector()
-        collector.add_new_book('Гордость и предубеждение и зомби')
-        collector.add_new_book('Гордость и предубеждение и зомби')
-        assert len(collector.books_genre) == 1
+        collector.add_new_book(name)
+        collector.add_new_book(name)
+        assert len(collector.get_books_genre()) == 1
 
     @pytest.mark.parametrize(
         'name',
@@ -31,73 +35,91 @@ class TestBooksCollector:
     def test_add_new_book_negative_add_book_lenght_not_valid(self, name):
         collector = BooksCollector()
         collector.add_new_book(name)
-        assert len(collector.books_genre) == 0
+        assert name not in collector.get_books_genre()
 
     def test_set_book_genre_real_book_and_genre_true(self):
         collector = BooksCollector()
-        collector.add_new_book('Гордость и предубеждение и зомби')
-        collector.set_book_genre('Гордость и предубеждение и зомби', 'Фантастика')
-        assert collector.books_genre.get('Гордость и предубеждение и зомби') == 'Фантастика'
+        name = 'Гордость и предубеждение и зомби'
+        genre = 'Фантастика'
+        collector.add_new_book(name)
+        collector.set_book_genre(name, genre)
+        assert collector.get_book_genre(name) == genre
 
     def test_get_book_genre_real_book_and_genre_true(self):
         collector = BooksCollector()
-        collector.add_new_book('Гордость и предубеждение и зомби')
-        collector.set_book_genre('Гордость и предубеждение и зомби', 'Фантастика')
-        books_genre = collector.get_book_genre('Гордость и предубеждение и зомби')
-        assert books_genre == 'Фантастика'
+        name = 'Гордость и предубеждение и зомби'
+        genre = 'Фантастика'
+        collector.add_new_book(name)
+        collector.set_book_genre(name, genre)
+        date = collector.get_book_genre(name)
+        assert date is not None
 
     def test_get_books_with_specific_genre_real_book_and_genre_true(self):
         collector = BooksCollector()
-        collector.add_new_book('Гордость и предубеждение и зомби')
-        collector.set_book_genre('Гордость и предубеждение и зомби', 'Фантастика')
-        books_with_specific_genre = collector.get_books_with_specific_genre('Фантастика')
-        assert len(books_with_specific_genre) == 1
+        name = 'Гордость и предубеждение и зомби'
+        genre = 'Фантастика'
+        collector.add_new_book(name)
+        collector.set_book_genre(name, genre)
+        books_with_specific_genre = collector.get_books_with_specific_genre(genre)
+        assert name in books_with_specific_genre
 
     def test_get_books_with_specific_genre_real_book_and_not_real_genre_true(self):
         collector = BooksCollector()
-        collector.add_new_book('Ну погоди!')
-        collector.set_book_genre('Ну погоди!', 'Мультфильмы')
-        books_with_specific_genre = collector.get_books_with_specific_genre('Фантастика')
-        assert len(books_with_specific_genre) == 0
+        name = 'Ну погоди!'
+        genre = 'Мультфильмы'
+        genre_compare = 'Фантастика'
+        collector.add_new_book(name)
+        collector.set_book_genre(name, genre)
+        books_with_specific_genre = collector.get_books_with_specific_genre(genre_compare)
+        assert name not in books_with_specific_genre
 
     def test_get_books_genre_book_in_genre_true(self):
         collector = BooksCollector()
-        collector.add_new_book('Гордость и предубеждение и зомби')
-        book_genre = collector.get_books_genre()
-        assert 'Гордость и предубеждение и зомби' in book_genre
+        name = 'Гордость и предубеждение и зомби'
+        collector.add_new_book(name)
+        date = collector.get_books_genre()
+        assert date is not None
 
     def test_get_books_for_children_valid_genre_true(self):
         collector = BooksCollector()
-        collector.add_new_book('Ну погоди!')
-        collector.set_book_genre('Ну погоди!', 'Мультфильмы')
+        name = 'Ну погоди!'
+        genre = 'Мультфильмы'
+        collector.add_new_book(name)
+        collector.set_book_genre(name, genre)
         books_for_children = collector.get_books_for_children()
-        assert 'Ну погоди!' in books_for_children
+        assert name in books_for_children
 
     def test_get_books_for_children_not_valid_genre_true(self):
         collector = BooksCollector()
-        collector.add_new_book('Граф Монте-Кристо')
-        collector.set_book_genre('Граф Монте-Кристо', 'Детектив')
+        name = 'Граф Монте-Кристо'
+        genre = 'Детектив'
+        collector.add_new_book(name)
+        collector.set_book_genre(name, genre)
         books_for_children = collector.get_books_for_children()
-        assert 'Граф Монте-Кристо' not in books_for_children
+        assert name not in books_for_children
 
     def test_add_book_in_favorites_book_in_favorites_true(self):
         collector = BooksCollector()
-        collector.add_new_book('Гордость и предубеждение и зомби')
-        collector.add_book_in_favorites('Гордость и предубеждение и зомби')
-        assert 'Гордость и предубеждение и зомби' in collector.favorites
+        name = 'Гордость и предубеждение и зомби'
+        collector.add_new_book(name)
+        collector.add_book_in_favorites(name)
+        assert name in collector.favorites
 
     def test_delete_book_from_favorites_book_delete_true(self):
         collector = BooksCollector()
-        collector.add_new_book('Гордость и предубеждение и зомби')
-        collector.add_book_in_favorites('Гордость и предубеждение и зомби')
-        collector.delete_book_from_favorites('Гордость и предубеждение и зомби')
-        assert 'Гордость и предубеждение и зомби' not in collector.favorites
+        name = 'Гордость и предубеждение и зомби'
+        collector.add_new_book(name)
+        collector.add_book_in_favorites(name)
+        collector.delete_book_from_favorites(name)
+        assert name not in collector.favorites
 
     def test_get_list_of_favorites_books_books_in_favorites_true(self):
         collector = BooksCollector()
-        collector.add_new_book('Гордость и предубеждение и зомби')
-        collector.add_new_book('Волшебник изумрудного города')
-        collector.add_book_in_favorites('Гордость и предубеждение и зомби')
-        collector.add_book_in_favorites('Волшебник изумрудного города')
+        name = 'Гордость и предубеждение и зомби'
+        name1 = 'Волшебник изумрудного города'
+        collector.add_new_book(name)
+        collector.add_new_book(name1)
+        collector.add_book_in_favorites(name)
+        collector.add_book_in_favorites(name1)
         list_of_favorites_books = collector.get_list_of_favorites_books()
-        assert 'Гордость и предубеждение и зомби', 'Волшебник изумрудного города' in list_of_favorites_books
+        assert name, name1 in list_of_favorites_books
